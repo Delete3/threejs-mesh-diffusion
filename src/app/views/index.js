@@ -7,6 +7,7 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 
 import Editor from '../utils/Editor';
 import { useUpdateEffect } from '../utils/tool/UseUpdateEffect';
+import DrawLine from '../utils/function/draw-line/DrawLine';
 
 const Main = props => {
   const containerRef = useRef();
@@ -14,6 +15,7 @@ const Main = props => {
   const loadModel = async () => {
     try {
       const res = await axios.get('/assets/Easterfrog.stl', { responseType: 'arraybuffer' });
+      
       const buffrGeometry = new STLLoader().parse(res.data);
       const material = new THREE.MeshStandardMaterial({
         color: 0xffffff,
@@ -21,6 +23,8 @@ const Main = props => {
         side: THREE.DoubleSide,
       });
       const mesh = new THREE.Mesh(buffrGeometry, material);
+
+      Editor.targetMesh = mesh;
       Editor.scene.add(mesh);
     } catch (error) {
       console.log(error);
@@ -32,6 +36,7 @@ const Main = props => {
 
     Editor.setEditor(containerRef.current);
     loadModel();
+    DrawLine.startDrawPoint();
   }, []);
 
   return (
